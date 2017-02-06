@@ -31,6 +31,7 @@ var/
 *.spec
 
 # Installer logs
+logs/
 pip-log.txt
 pip-delete-this-directory.txt
 
@@ -87,3 +88,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+images_cache/
+settings.py
