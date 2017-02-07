@@ -5,7 +5,6 @@ import shutil
 from datetime import datetime
 from os import path
 
-from moviepy.video.fx import resize
 from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 import cv_wrap
@@ -18,9 +17,9 @@ def get_gif():
     if not path.exists(filename_wo_ext) or not path.isdir(filename_wo_ext):
         os.makedirs(filename_wo_ext)
 
-    mp4_filename = filename_wo_ext + '.mp4'
+    result_filename = filename_wo_ext + '.mp4'
 
-    camera = cv_wrap.open_camera()
+    camera = cv_wrap.open_camera(settings.camera_gif_size)
 
     fps = cv_wrap.get_fps(camera)
 
@@ -42,14 +41,16 @@ def get_gif():
 
     print("... Merging ...", end=' ')
 
-    # clip = resize.resize(ImageSequenceClip(frames, fps), newsize=0.5)
     clip = ImageSequenceClip(frames, fps)
-    clip.write_videofile(mp4_filename, fps=fps, audio=False)
+    if settings.gif_format == '.mp4':
+        clip.write_videofile(result_filename, fps=fps, audio=False)
+    else:
+        clip.write_gif(result_filename, fps=fps, program='ffmpeg')
 
     print('Cleaning up...', end=' ')
 
     shutil.rmtree(filename_wo_ext)
 
-    print('Got MP4 ' + mp4_filename)
+    print('Got ' + settings.gif_format.upper() + ' ' + result_filename)
 
-    return mp4_filename
+    return result_filename
